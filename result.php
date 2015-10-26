@@ -30,7 +30,7 @@ $s3 = new Aws\S3\S3Client([
 ]);
 
 
-$bucket = uniqid("php-jrh-",false);
+$bucket = uniqid("php-jgl-",false);
 
 # AWS PHP SDK version 3 create bucket
 $result = $s3->createBucket([
@@ -49,7 +49,7 @@ $key = $uploadfile;
 #));
 
 # PHP version 3
-$result = $client->putObject([
+$result = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
     'Key' => $uploadfile
@@ -59,6 +59,74 @@ $result = $client->putObject([
 $url = $result['ObjectURL'];
 echo $url;
 
+
+$rds = new Aws\Rds\RdsClient([
+    'version' => 'latest',
+    'region'  => 'us-east-1'
+]);
+
+$result = $rds->describeDBInstances([
+    'DBInstanceIdentifier' => 'mp1-jrh',
+    #'Filters' => [
+    #    [
+    #        'Name' => '<string>', // REQUIRED
+    #        'Values' => ['<string>', ...], // REQUIRED
+    #    ],
+        // ...
+   # ],
+   # 'Marker' => '<string>',
+   # 'MaxRecords' => <integer>,
+]);
+
+
+$endpoint = $result['DBInstances']['Endpoint']['Address']
+    echo "============\n". $endpoint . "================";
+
+//echo "begin database";^M
+$link = mysqli_connect($endpoint,"controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
+
+
+/* check connection */
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
+
+
+/* Prepared statement, stage 1: prepare */
+if (!($stmt = $link->prepare("INSERT INTO items (id, email,phone,filename,s3rawurl,s3finishedurl,status,issubscribed) VALUES (NULL,?,?,?,?,?,?,?)"))) {
+    echo "Prepare failed: (" . $link->errno . ") " . $link->error;
+}
+
+$email = $_POST['useremail'];
+$phone = $_POST['phone'];
+$s3rawurl = $url; //  $result['ObjectURL']; from above
+$filename = basename($_FILES['userfile']['name']);
+$s3finishedurl = "none";
+$status =0;
+$issubscribed=0;
+
+$stmt->bind_param("sssssii",$email,$phone,$filename,$s3rawurl,$s3finishedurl,$status,$issubscribed);
+
+if (!$stmt->execute()) {
+    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+printf("%d Row inserted.\n", $stmt->affected_rows);
+
+/* explicit close recommended */
+$stmt->close();
+
+$link->real_query("SELECT * FROM items");
+$res = $link->use_result();
+
+echo "Result set order...\n";
+while ($row = $res->fetch_assoc()) {
+    echo $row['id'] . " " . $row['email']. " " . $row['phone'];
+}
+
+
+$link->close();
 
 //add code to detect if subscribed to SNS topic 
 //if not subscribed then subscribe the user and UPDATE the column in the database with a new value 0 to 1 so that then each time you don't have to resubscribe them
