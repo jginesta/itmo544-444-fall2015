@@ -66,7 +66,7 @@ $rds = new Aws\Rds\RdsClient([
 ]);
 
 $result = $rds->describeDBInstances([
-    'DBInstanceIdentifier' => 'mp1-jrh',
+    'DBInstanceIdentifier' => 'mp1-jgl',
     #'Filters' => [
     #    [
     #        'Name' => '<string>', // REQUIRED
@@ -80,7 +80,7 @@ $result = $rds->describeDBInstances([
 
 
 $endpoint = $result['DBInstances']['Endpoint']['Address']
-    echo "============\n". $endpoint . "================";
+   # echo "============\n". $endpoint . "================";
 
 //echo "begin database";^M
 $link = mysqli_connect($endpoint,"controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
