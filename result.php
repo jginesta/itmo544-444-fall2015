@@ -83,7 +83,8 @@ $endpoint = $result['DBInstances']['Endpoint']['Address']
 # echo "============\n". $endpoint . "================";
 
 //echo "begin database";
-$link = mysqli_connect($endpoint,"controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
+#$link = mysqli_connect($endpoint,"controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
+$link = mysqli_connect("mp1-jgl.cw8kdufv50zu.us-east-1.rds.amazonaws.com:3306","controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
 
 
 /* check connection */
