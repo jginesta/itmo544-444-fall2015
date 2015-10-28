@@ -5,6 +5,7 @@ $rds = new Aws\Rds\RdsClient([
     'version' => 'latest',
     'region'  => 'us-east-1'
 ]);
+
 $result = $rds->createDBInstance([
     'AllocatedStorage' => 10,
     #'AutoMinorVersionUpgrade' => true || false,
@@ -18,7 +19,7 @@ $result = $rds->createDBInstance([
     'DBName' => 'customerrecords',
     #'DBParameterGroupName' => '<string>',
     #'DBSecurityGroups' => ['<string>', ...],
-    #'DBSubnetGroupName' => '<string>',
+    'DBSubnetGroupName' => 'default-vpc-58cc1f3c',
     'Engine' => 'MySQL', // REQUIRED
     'EngineVersion' => '5.5.41',
     #'Iops' => <integer>,
