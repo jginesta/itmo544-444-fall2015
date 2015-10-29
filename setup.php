@@ -19,6 +19,7 @@ $result = $rds->createDBInstance([
     'DBName' => 'customerrecords',
     #'DBParameterGroupName' => '<string>',
     #'DBSecurityGroups' => ['<string>', ...],
+###changed subnet groupname
     'DBSubnetGroupName' => 'default-vpc-58cc1f3c',
     'Engine' => 'MySQL', // REQUIRED
     'EngineVersion' => '5.5.41',
