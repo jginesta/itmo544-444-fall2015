@@ -20,7 +20,7 @@ $result = $rds->createDBInstance([
     #'DBParameterGroupName' => '<string>',
     #'DBSecurityGroups' => ['<string>', ...],
 ###changed subnet groupname
-    'DBSubnetGroupName' => 'default-vpc-58cc1f3c',
+    'DBSubnetGroupName' => 'itmo544',
     'Engine' => 'MySQL', // REQUIRED
     'EngineVersion' => '5.5.41',
     #'Iops' => <integer>,
