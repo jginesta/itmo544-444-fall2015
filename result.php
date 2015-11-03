@@ -66,7 +66,7 @@ $rds = new Aws\Rds\RdsClient([
 ]);
 
 $result = $rds->describeDBInstances([
-    'DBInstanceIdentifier' => 'mp1-jgl',
+    'DBInstanceIdentifier' => 'mp1-jgls',
     #'Filters' => [
     #    [
     #        'Name' => '<string>', // REQUIRED
