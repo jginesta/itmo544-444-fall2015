@@ -56,8 +56,9 @@ $s3->waitUntil('BucketExists', array( 'Bucket'=> $bucket));
 $result = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
-    'Key' => $uploadfile,
-    'SourceFile' => $uploadfile
+    'Key' => "Hello".$uploadfile,
+    'ContentType' => $_FILES['userfile']['tmp_name']
+    'Body'   => fopen($uploadfile, 'r+')
 ]);  
 
 
