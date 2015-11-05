@@ -22,14 +22,29 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-echo "Here is the result: " . $link;
-
-$sql = "CREATE TABLE comments 
+#print "Here is the result: " . $link;
+global $con;
+$sql = "CREATE TABLE jgldata
 (
 ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-PosterName VARCHAR(32),
-Title VARCHAR(32),
-Content VARCHAR(500)
+uname VARCHAR(20),
+email VARCHAR(20),
+phone VARCHAR(20),
+filename VARCHAR(256),
+s3rawurl VARCHAR(256),
+s3finishedurl VARCHAR(256),
+state TINYINT(3),
+date TIMESTAMP 
+
 )";
-$con->query($sql);
+
+# DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+#if ($conn->query($sql) === TRUE) {
+#    echo "Table MyGuests created successfully";
+#} else {
+ #   echo "Error creating table: " . $conn->error;
+#}
+#mysqli_close($conn);
+#$con->query($sql);
+shell-exec("chmod 600 setup.php");
 ?>

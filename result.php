@@ -67,18 +67,19 @@ $rds = new Aws\Rds\RdsClient([
 
 $result = $rds->describeDBInstances([
     'DBInstanceIdentifier' => 'mp1-jgl',
-    #'Filters' => [
+   # 'Filters' => [
     #    [
-    #        'Name' => '<string>', // REQUIRED
-    #        'Values' => ['<string>', ...], // REQUIRED
-    #    ],
+     #       'Name' => 'customerrecords', // REQUIRED
+      #      'Values' => ['jessica', 'ginesta'], // REQUIRED
+       # ],
         // ...
-   # ],
+    #],
    # 'Marker' => '<string>',
    # 'MaxRecords' => <integer>,
 ]);
 
 print_r ($result);
+
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
 print_r ($endpoint);
  print "============\n". $endpoint . "================";
@@ -96,7 +97,7 @@ if (mysqli_connect_errno()) {
 
 
 /* Prepared statement, stage 1: prepare */
-if (!($stmt = $link->prepare("INSERT INTO items (id, email,phone,filename,s3rawurl,s3finishedurl,status,issubscribed) VALUES (NULL,?,?,?,?,?,?,?)"))) {
+if (!($stmt = $link->prepare("INSERT INTO jgldata (id, email,phone,filename,s3rawurl,s3finishedurl,state,date) VALUES (NULL,?,?,?,?,?,?,?)"))) {
     echo "Prepare failed: (" . $link->errno . ") " . $link->error;
 }
 
@@ -106,9 +107,10 @@ $s3rawurl = $url; //  $result['ObjectURL']; from above
 $filename = basename($_FILES['userfile']['name']);
 $s3finishedurl = "none";
 $status =0;
-$issubscribed=0;
+$date='2015-05-30 10:09:00';
 
-$stmt->bind_param("sssssii",$email,$phone,$filename,$s3rawurl,$s3finishedurl,$status,$issubscribed);
+
+$stmt->bind_param("sssssii",$email,$phone,$filename,$s3rawurl,$s3finishedurl,$state,$date);
 
 if (!$stmt->execute()) {
     echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
