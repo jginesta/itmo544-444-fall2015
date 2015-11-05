@@ -23,7 +23,7 @@ if (mysqli_connect_errno()) {
 }
 
 #print "Here is the result: " . $link;
-global $con;
+#global $con;
 $sql = "CREATE TABLE jgldata
 (
 ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -45,6 +45,6 @@ date TIMESTAMP
  #   echo "Error creating table: " . $conn->error;
 #}
 #mysqli_close($conn);
-#$con->query($sql);
+$link->query($sql);
 shell-exec("chmod 600 setup.php");
 ?>
