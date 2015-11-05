@@ -6,6 +6,10 @@ $rds = new Aws\Rds\RdsClient([
     'region'  => 'us-east-1'
 ]);
 
+$s3 = new Aws\S3\S3Client([
+    'version' => 'latest',
+    'region'  => 'us-east-1'
+]);
 
 // Create a table 
 $result = $rds->describeDBInstances([
@@ -33,7 +37,7 @@ phone VARCHAR(20),
 filename VARCHAR(256),
 s3rawurl VARCHAR(256),
 s3finishedurl VARCHAR(256),
-state TINYINT(3),
+state TINYINT(3)CHECK(state IN(0,1,2)),
 date TIMESTAMP 
 
 )";
@@ -46,5 +50,6 @@ date TIMESTAMP
 #}
 #mysqli_close($conn);
 $link->query($sql);
-shell-exec("chmod 600 setup.php");
+#shell-exec("chmod 600 setup-lite.php");
+chmod("setup-lite.php", 600);
 ?>
