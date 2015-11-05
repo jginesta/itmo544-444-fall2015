@@ -78,10 +78,10 @@ $result = $rds->describeDBInstances([
    # 'MaxRecords' => <integer>,
 ]);
 
-print_r ($result);
+#print_r ($result);
 
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
-print_r ($endpoint);
+#print_r ($endpoint);
  print "============\n". $endpoint . "================";
 
 //echo "begin database";
@@ -121,7 +121,7 @@ printf("%d Row inserted.\n", $stmt->affected_rows);
 /* explicit close recommended */
 $stmt->close();
 
-$link->real_query("SELECT * FROM items");
+$link->real_query("SELECT * FROM jgldata");
 $res = $link->use_result();
 
 echo "Result set order...\n";
