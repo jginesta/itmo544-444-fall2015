@@ -57,6 +57,7 @@ a {
 /* line 57, ../sass/demo.scss */
 .container .gallery a.big img {
   width: 40%;
+  vertical-allign:top
 }
 
 /* line 65, ../sass/demo.scss */
