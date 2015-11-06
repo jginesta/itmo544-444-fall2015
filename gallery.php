@@ -47,83 +47,65 @@ if (mysqli_connect_errno()) {
 #$link->real_query("SELECT * FROM jgldata WHERE email = '$email'");
 $link->real_query("SELECT * FROM jgldata");
 $res = $link->use_result();
-
-?>
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Gallery</title>
-        <style>
-
-            /* Demo styles */
-            html,body{background:#222;margin:0;}
-            body{border-top:4px solid #000;}
-            .content{color:#777;font:12px/1.4 "helvetica neue",arial,sans-serif;width:620px;margin:20px auto;}
-            h1{font-size:12px;font-weight:normal;color:#ddd;margin:0;}
-            p{margin:0 0 20px}
-            a {color:#22BCB9;text-decoration:none;}
-            .cred{margin-top:20px;font-size:11px;}
-
-            /* This rule is read by Galleria to define the gallery height: */
-            #galleria{height:320px}
-
-        </style>
-
-        <!-- load jQuery -->
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-
-        <!-- load Galleria -->
-        <script src="js/galleria-1.4.2.min.js"></script>
-
-    </head>
+<html lang="de">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<title>Gallery</title>
+	<link href='http://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
+	<link href='../dist/simplelightbox.min.css' rel='stylesheet' type='text/css'>
+	<link href='demo.css' rel='stylesheet' type='text/css'>
+</head>
 <body>
-    <div class="content">
-        <h1>Jessica Gallery</h1>
-        <p>Demonstrating a basic gallery example.</p>
+	<div class="container">
+		<h1 class="align-center">Jessicas Gallery</h1>
+		<div class="gallery">	
+			<a href="images/image1.jpg" class="big"><img src="images/thumbs/thumb1.jpg" alt="" title="Beautiful Image" /></a>
+			<a href="images/image2.jpg"><img src="images/thumbs/thumb2.jpg" alt="" title=""/></a>
+			<a href="images/image3.jpg"><img src="images/thumbs/thumb3.jpg" alt="" title="Beautiful Image"/></a>
+			<a href="images/image4.jpg"><img src="images/thumbs/thumb4.jpg" alt="" title=""/></a>
+			<div class="clear"></div>
+			
+			<a href="images/image5.jpg"><img src="images/thumbs/thumb5.jpg" alt="" title=""/></a>
+			<a href="images/image6.jpg"><img src="images/thumbs/thumb6.jpg" alt="" title=""/></a>
+			<a href="images/image7.jpg" class="big"><img src="images/thumbs/thumb7.jpg" alt="" title=""/></a>
+			<a href="images/image8.jpg"><img src="images/thumbs/thumb8.jpg" alt="" title=""/></a>
+			<div class="clear"></div>
+			
+			<a href="images/image9.jpg" class="big"><img src="images/thumbs/thumb9.jpg" alt="" title=""/></a>
+			<a href="images/image10.jpg"><img src="images/thumbs/thumb10.jpg" alt="" title=""/></a>
+			<a href="images/image11.jpg"><img src="images/thumbs/thumb11.jpg" alt="" title=""/></a>
+			<a href="images/image12.jpg"><img src="images/thumbs/thumb12.jpg" alt="" title=""/></a>
+			<div class="clear"></div>
+			
+		</div>
+	
+		<br><br>
+			
+	</div>
+	<div class="links">
+	<?php
+               
+               	while ($row = $res->fetch_assoc()) 
+               	{
+               	echo '<a href="'. $row['s3rawurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3rawurl'] . '" width="100" height="100" ></a>';  
+                  }
+               	$link->close();
+                         
+               ?>	
+	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="../dist/simple-lightbox.js"></script>
+<script>
+	$(function(){
+		var gallery = $('.gallery a').simpleLightbox();
+	});
+</script>
+</body>
+</html>	
 
-        <!-- Adding gallery images. We use resized thumbnails here for better performance, but it’s not necessary -->
-
-        <div id="galleria">
-	    <?php
-	    while ($row = $res->fetch_assoc()) {
-            echo "<img src =\" " . $row['s3rawurl'] . "\" /><img src =\"" .$row['s3finishedurl'] . "\"/>";
-            echo $row['ID'] . "Email: " . $row['email'];
-	    }
-            $link->close();
-	    ?>
-            <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Biandintz_eta_zaldiak_-_modified2.jpg/800px-Biandintz_eta_zaldiak_-_modified2.jpg">
-                <img 
-                    src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Biandintz_eta_zaldiak_-_modified2.jpg/100px-Biandintz_eta_zaldiak_-_modified2.jpg",
-                    data-big="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Biandintz_eta_zaldiak_-_modified2.jpg/1280px-Biandintz_eta_zaldiak_-_modified2.jpg"
-                    data-title="Biandintz eta zaldiak"
-                    data-description="Horses on Bianditz mountain, in Navarre, Spain."
-                >
-            </a>
-            <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Athabasca_Rail_at_Brule_Lake.jpg/800px-Athabasca_Rail_at_Brule_Lake.jpg">
-                <img 
-                    src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Athabasca_Rail_at_Brule_Lake.jpg/100px-Athabasca_Rail_at_Brule_Lake.jpg",
-                    data-big="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Athabasca_Rail_at_Brule_Lake.jpg/1280px-Athabasca_Rail_at_Brule_Lake.jpg"
-                    data-title="Athabasca Rail"
-                    data-description="The Athabasca River railroad track at the mouth of Brulé Lake in Alberta, Canada."
-                >
-            </a>
-            <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Back-scattering_crepuscular_rays_panorama_1.jpg/1280px-Back-scattering_crepuscular_rays_panorama_1.jpg">
-                <img 
-                    src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Back-scattering_crepuscular_rays_panorama_1.jpg/100px-Back-scattering_crepuscular_rays_panorama_1.jpg",
-                    data-big="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Back-scattering_crepuscular_rays_panorama_1.jpg/1400px-Back-scattering_crepuscular_rays_panorama_1.jpg"
-                    data-title="Back-scattering crepuscular rays"
-                    data-description="Picture of the day on Wikimedia Commons 26 September 2010."
-                >
-            </a>
-            <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Interior_convento_3.jpg/800px-Interior_convento_3.jpg">
-                <img 
-                    src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Interior_convento_3.jpg/120px-Interior_convento_3.jpg",
-                    data-big="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Interior_convento_3.jpg/1400px-Interior_convento_3.jpg"
-                    data-title="Interior convento"
-                    data-description="Interior view of Yuriria Convent, founded in 1550."
-                >
-            </a>
             <a href="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg/800px-Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg">
                 <img 
                     src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg/100px-Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg",
