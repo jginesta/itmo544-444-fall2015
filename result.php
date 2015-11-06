@@ -57,7 +57,7 @@ $result = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
     'Key' => "Hello".$uploadfile,
-    'ContentType' => $_FILES['userfile']['tmp_name']
+    'ContentType' => $_FILES['userfile']['tmp_name'],
     'Body'   => fopen($uploadfile, 'r+')
 ]);  
 
@@ -99,7 +99,7 @@ if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 }
-echo "Connection to database correct"
+echo "Connection to database correct ";
 
 /* Prepared statement, stage 1: prepare */
 if (!($stmt = $link->prepare("INSERT INTO jgldata (ID, email,phone,filename,s3rawurl,s3finishedurl,state,date) VALUES (NULL,?,?,?,?,?,?,?)"))) {
@@ -136,8 +136,8 @@ while ($row = $res->fetch_assoc()) {
 
 
 $link->close();
-header ('Location: gallery.php',true,303);
-
+#header ('Location: gallery.php',true,303);
+header ('Location: gallery.php');
 //add code to detect if subscribed to SNS topic 
 //if not subscribed then subscribe the user and UPDATE the column in the database with a new value 0 to 1 so that then each time you don't have to resubscribe them
 
