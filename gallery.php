@@ -3,6 +3,7 @@
 session_start();
 require 'vendor/autoload.php';
 
+# Creating a client for the s3 bucket
 use Aws\Rds\RdsClient;
 $client = new Aws\Rds\RdsClient([
  'version' => 'latest',
@@ -15,20 +16,23 @@ $result = $client->describeDBInstances([
 
 $endpoint = "";
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
+
+# Connecting to the database
 $link = mysqli_connect($endpoint,"controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
 
-/* check connection */
+/* Checking the database connection */
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 }
 
-//below line is unsafe - $email is not checked for SQL injection -- don't do this in real life or use an ORM instead
+# Selecting everything that the database with the name jgldata contains
 #$link->real_query("SELECT * FROM jgldata WHERE email = '$email'");
 $link->real_query("SELECT * FROM jgldata");
 $res = $link->use_result();
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="de">

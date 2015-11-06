@@ -42,14 +42,6 @@ date TIMESTAMP
 
 )";
 
-# DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-#if ($conn->query($sql) === TRUE) {
-#    echo "Table MyGuests created successfully";
-#} else {
- #   echo "Error creating table: " . $conn->error;
-#}
-#mysqli_close($conn);
 $link->query($sql);
-#shell-exec("chmod 600 setup-lite.php");
 chmod("setup-lite.php", 600);
 ?>

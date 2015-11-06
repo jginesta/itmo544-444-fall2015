@@ -8,7 +8,7 @@ session_start();
 require 'vendor/autoload.php';
 use Aws\S3\S3Client;
 
-echo $_POST['useremail'];
+echo $_POST['email'];
 
 $uploaddir = '/tmp/';
 $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
@@ -25,8 +25,6 @@ print_r($_FILES);
 print "</pre>";
 
 
-#$client = S3Client::factory();
-#use Aws\S3\S3Client;
 $s3 = new Aws\S3\S3Client([
     'version' => 'latest',
     'region'  => 'us-east-1'
@@ -42,15 +40,6 @@ $result = $s3->createBucket([
 ]);
 
 $s3->waitUntil('BucketExists', array( 'Bucket'=> $bucket));
-#$client->waitUntilBucketExists(array('Bucket' => $bucket));
-#Old PHP SDK version 2
-#$key = $uploadfile;
-#$result = $client->putObject(array(
-#    'ACL' => 'public-read',
-#    'Bucket' => $bucket,
-#    'Key' => $key,
-#    'SourceFile' => $uploadfile 
-#));
 
 # PHP version 3
 $result = $s3->putObject([
@@ -71,44 +60,30 @@ $rds = new Aws\Rds\RdsClient([
     'region'  => 'us-east-1'
 ]);
 
-$result = $rds->describeDBInstances([
-    'DBInstanceIdentifier' => 'mp1-jgl',
-   # 'Filters' => [
-    #    [
-     #       'Name' => 'customerrecords', // REQUIRED
-      #      'Values' => ['jessica', 'ginesta'], // REQUIRED
-       # ],
-        // ...
-    #],
-   # 'Marker' => '<string>',
-   # 'MaxRecords' => <integer>,
-]);
-
-#print_r ($result);
+$result = $rds->describeDBInstances(['DBInstanceIdentifier' => 'mp1-jgl',]);
 
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
-#print_r ($endpoint);
  print "============\n". $endpoint . "================";
 
-//echo "begin database";
+# Database connection
 $link = mysqli_connect($endpoint,"controller","letmein888","customerrecords",3306) or die("Error " . mysqli_error($link));
-#$link = mysqli_connect("mp1-jgl.cw8kdufv50zu.us-east-1.rds.amazonaws.com","controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
 
-/* check connection */
+# Check database connection 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 }
 echo "Connection to database correct ";
 
+# Inserting data int the database
 /* Prepared statement, stage 1: prepare */
 if (!($stmt = $link->prepare("INSERT INTO jgldata (ID, email,phone,filename,s3rawurl,s3finishedurl,state,date) VALUES (NULL,?,?,?,?,?,?,?)"))) {
     echo "Prepare failed: (" . $link->errno . ") " . $link->error;
 }
 
-$email = $_POST['useremail'];
+$email = $_POST['email'];
 $phone = $_POST['phone'];
-$s3rawurl = $url; //  $result['ObjectURL']; from above
+$s3rawurl = $url; 
 $filename = basename($_FILES['userfile']['name']);
 $s3finishedurl = "none";
 $status =0;
@@ -136,7 +111,6 @@ while ($row = $res->fetch_assoc()) {
 
 
 $link->close();
-#header ('Location: gallery.php',true,303);
 header ('Location: gallery.php');
 //add code to detect if subscribed to SNS topic 
 //if not subscribed then subscribe the user and UPDATE the column in the database with a new value 0 to 1 so that then each time you don't have to resubscribe them
