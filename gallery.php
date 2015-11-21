@@ -27,7 +27,6 @@ if (mysqli_connect_errno()) {
 }
 
 # Selecting everything that the database with the name jgldata contains
-#$link->real_query("SELECT * FROM jgldata WHERE email = '$email'");
 $link->real_query("SELECT * FROM jgldata");
 $res = $link->use_result();
 
