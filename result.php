@@ -7,6 +7,10 @@ session_start();
 
 require 'vendor/autoload.php';
 use Aws\S3\S3Client;
+use Aws\Sns\SnsClient;
+
+#$email = 'jginesta@hawk.iit.edu';
+$match= 0;
 
 echo $_POST['email'];
 
@@ -107,6 +111,104 @@ $res = $link->use_result();
 echo "Result set order...\n";
 while ($row = $res->fetch_assoc()) {
     echo $row['ID'] . " " . $row['email']. " " . $row['phone'];
+}
+
+
+$sns = SnsClient::factory(array(
+'version' => 'latest',
+'region' => 'us-east-1'
+));
+
+$ArnArray = $sns->createTopic([
+'Name' => 'mp2-jgl',
+]);
+
+$Arn= $ArnArray['TopicArn'];
+echo "\r\n";
+echo "This is the Arn for the picture upload topic: $Arn";
+
+$settopicAttributes = $sns->setTopicAttributes(array(
+    'TopicArn' => "$Arn",
+    'AttributeName'=>'DisplayName',
+    'AttributeValue'=>'mp2-jgl',
+));
+echo "\r\n";
+##echo "## $settopicAttributes";
+
+$topicAttributes = $sns->getTopicAttributes(array(
+    'TopicArn' => "$Arn",
+    'AttributeName'=>'DisplayName',
+    'AttributeValue'=>'mp2-jgl',
+));
+echo "\r\n";
+##echo "########$topicAttributes";
+
+echo "\r\n";
+echo "Subscriptions pending: {$topicAttributes['Attributes']['SubscriptionsPending']}";
+echo "\r\n";
+echo "Subscriptions confirmed: {$topicAttributes['Attributes']['SubscriptionsConfirmed']} ";
+
+$listSubscriptions = $sns->listSubscriptionsByTopic(array(
+    // TopicArn is required
+    'TopicArn' => "$Arn",
+));
+
+
+for ($i=0; $i<sizeOf($listSubscriptions['Subscriptions']); $i++) {
+    $endpointsubscriptions=$listSubscriptions['Subscriptions'][$i]['Endpoint'];
+   # $allendpoint=array($endpointsubscriptions);
+    $allendpoint[] = $endpointsubscriptions;
+    #echo "\r\n";
+    ##echo "The users subscribed to this topic are $allendpoint[0]";
+    echo "\r\n";
+    #echo "The users subscribed to this topic are $allendpoint[1]";
+    #echo "\r\n";
+    echo "This is the user email $email";
+    if(sizeOf($endpointsubscriptions)==null){
+	$subscribe = $sns->subscribe(array(
+          'TopicArn' => "$Arn",
+          'Protocol' => 'email',
+          'Endpoint' => "$email",
+           ));
+    
+            echo "\r\n";
+            echo "First user subscribed correctly {$subscribe['SubscriptionArn']}";
+	    $match=2;
+	}
+    else{
+	for($i=0;$i<sizeOf($allendpoint);$i++)
+        {
+   		if($email==$allendpoint[$i]){
+   			$match=1;  
+   		}
+    
+   
+ 	}
+
+	#	echo "\r\n";
+	#echo "User exists $match";
+     
+   		if($match==1)
+       		{
+           		#echo "\r\n";
+           		#echo "User already subscribed to topic";
+	   		$match=2;
+	   
+       		}
+   		if($match==0){
+	   		$subscribe = $sns->subscribe(array(
+          		'TopicArn' => "$Arn",
+          		'Protocol' => 'email',
+         		 'Endpoint' => "$email",
+           	));
+    
+            	echo "\r\n";
+            	echo "User subscribed correctly with status {$subscribe['SubscriptionArn']}";
+	    	$match=2;
+	    	echo "\r\n";
+	   # break;
+       		}
+    }
 }
 
 
