@@ -19,11 +19,14 @@ Enter Phone of user (1-XXX-XXX-XXXX): <input type="phone" name="phone">
 <hr />
 <!-- The data encoding type, enctype, MUST be specified as below -->
 <form enctype="multipart/form-data" action="gallery.php" method="POST">
-    
-Enter Email of user for gallery to browse: <input type="email" name="email">
+Enter Email of user for gallery to browse: <input type="email" name="email"><br />
 <input type="submit" value="Load Gallery" />
 </form>
 
+<!-- <form enctype="multipart/form-data" action="MP2Subscription.php" method="POST">
+Enter Email of user to subscribe: <input type="text" name="email"/><br />
+Subscribe <input type="submit" value="MP2Subscription">
+</form>-->
 
 </body>
 </html>

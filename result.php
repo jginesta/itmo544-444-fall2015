@@ -113,104 +113,42 @@ while ($row = $res->fetch_assoc()) {
     echo $row['ID'] . " " . $row['email']. " " . $row['phone'];
 }
 
+$snsquery->real_query("SELECT arn,name FROM sns");
+$ressns = $snsquery->use_result();
 
-$sns = SnsClient::factory(array(
+echo "Result set order...\n";
+while ($row = $ressns->fetch_assoc()) {
+    echo $row['arn'] . " " . $row['name'];
+}
+
+$sns = new Aws\Sns\SnsClient(array(
 'version' => 'latest',
 'region' => 'us-east-1'
 ));
 
 $ArnArray = $sns->createTopic([
-'Name' => 'mp2-jgl',
+'Name' => 'mp2-jgl-pic',
 ]);
-
 $Arn= $ArnArray['TopicArn'];
-echo "\r\n";
-echo "This is the Arn for the picture upload topic: $Arn";
 
-$settopicAttributes = $sns->setTopicAttributes(array(
-    'TopicArn' => "$Arn",
-    'AttributeName'=>'DisplayName',
-    'AttributeValue'=>'mp2-jgl',
-));
-echo "\r\n";
-##echo "## $settopicAttributes";
-
-$topicAttributes = $sns->getTopicAttributes(array(
-    'TopicArn' => "$Arn",
-    'AttributeName'=>'DisplayName',
-    'AttributeValue'=>'mp2-jgl',
-));
-echo "\r\n";
-##echo "########$topicAttributes";
-
-echo "\r\n";
-echo "Subscriptions pending: {$topicAttributes['Attributes']['SubscriptionsPending']}";
-echo "\r\n";
-echo "Subscriptions confirmed: {$topicAttributes['Attributes']['SubscriptionsConfirmed']} ";
-
-$listSubscriptions = $sns->listSubscriptionsByTopic(array(
-    // TopicArn is required
-    'TopicArn' => "$Arn",
-));
-
-
-for ($i=0; $i<sizeOf($listSubscriptions['Subscriptions']); $i++) {
-    $endpointsubscriptions=$listSubscriptions['Subscriptions'][$i]['Endpoint'];
-   # $allendpoint=array($endpointsubscriptions);
-    $allendpoint[] = $endpointsubscriptions;
-    #echo "\r\n";
-    ##echo "The users subscribed to this topic are $allendpoint[0]";
-    echo "\r\n";
-    #echo "The users subscribed to this topic are $allendpoint[1]";
-    #echo "\r\n";
-    echo "This is the user email $email";
-    if(sizeOf($endpointsubscriptions)==null){
-	$subscribe = $sns->subscribe(array(
-          'TopicArn' => "$Arn",
-          'Protocol' => 'email',
-          'Endpoint' => "$email",
-           ));
-    
-            echo "\r\n";
-            echo "First user subscribed correctly {$subscribe['SubscriptionArn']}";
-	    $match=2;
-	}
-    else{
-	for($i=0;$i<sizeOf($allendpoint);$i++)
-        {
-   		if($email==$allendpoint[$i]){
-   			$match=1;  
-   		}
-    
-   
- 	}
-
-	#	echo "\r\n";
-	#echo "User exists $match";
-     
-   		if($match==1)
-       		{
-           		#echo "\r\n";
-           		#echo "User already subscribed to topic";
-	   		$match=2;
-	   
-       		}
-   		if($match==0){
-	   		$subscribe = $sns->subscribe(array(
-          		'TopicArn' => "$Arn",
-          		'Protocol' => 'email',
-         		 'Endpoint' => "$email",
-           	));
-    
-            	echo "\r\n";
-            	echo "User subscribed correctly with status {$subscribe['SubscriptionArn']}";
-	    	$match=2;
-	    	echo "\r\n";
-	   # break;
-       		}
-    }
+$insertsns="INSERT INTO sns (arn, name) VALUES (?,?)";
+$stmt->bind_param("ss",$arn,$name);
+if (!$stmt->execute()) {
+    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
 }
 
+$result = $sns->publish(array(
+    'TopicArn' => $Arn,
+   
+    // Message is required
+    'Message' => 'Image uploaded successfully',
+    'Subject' => 'Image upload',
+
+        // ... repeated
+    
+));
+echo "\r\n";	
+echo "Successfull publish to user";
 
 $link->close();
 header ('Location: gallery.php');
