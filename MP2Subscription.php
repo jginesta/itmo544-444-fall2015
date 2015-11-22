@@ -4,7 +4,6 @@ require 'vendor/autoload.php';
 use Aws\Sns\SnsClient;
 
 $email = 'jginesta@hawk.iit.edu';
-$match= 0;
 
 $sns = new Aws\Sns\SnsClient(array(
 'version' => 'latest',
