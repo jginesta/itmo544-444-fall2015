@@ -12,7 +12,7 @@ $sns = new Aws\Sns\SnsClient(array(
 ));
 
 $ArnArray = $sns->createTopic([
-'Name' => 'mp2-jgl',
+'Name' => 'mp2-jgl-pict',
 ]);
 
 $Arn= $ArnArray['TopicArn'];
@@ -22,14 +22,14 @@ echo "This is the Arn for the picture upload topic: $Arn";
 $settopicAttributes = $sns->setTopicAttributes(array(
     'TopicArn' => "$Arn",
     'AttributeName'=>'DisplayName',
-    'AttributeValue'=>'mp2-jgl-pic',
+    'AttributeValue'=>'mp2-jgl-pict',
 ));
 echo "\r\n";
 
 $topicAttributes = $sns->getTopicAttributes(array(
     'TopicArn' => "$Arn",
     'AttributeName'=>'DisplayName',
-    'AttributeValue'=>'mp2-jgl-pic',
+    'AttributeValue'=>'mp2-jgl-pict',
 ));
 echo "\r\n";
 echo "Subscriptions pending: {$topicAttributes['Attributes']['SubscriptionsPending']}";
@@ -41,11 +41,9 @@ $listSubscriptions = $sns->listSubscriptionsByTopic(array(
     'TopicArn' => $Arn,
 ));
 
-
-for ($i=0; $i<sizeOf($listSubscriptions['Subscriptions']); $i++) {
-    $endpointsubscriptions=$listSubscriptions['Subscriptions'][$i]['Endpoint'];
-    $allendpoint[] = $endpointsubscriptions;
-    if(sizeOf($endpointsubscriptions)==null){
+if(sizeOf($listSubscriptions['Subscriptions'])==0){
+   
+    
 	$subscribe = $sns->subscribe(array(
           'TopicArn' => $Arn,
           'Protocol' => 'email',
@@ -55,8 +53,12 @@ for ($i=0; $i<sizeOf($listSubscriptions['Subscriptions']); $i++) {
             echo "\r\n";
             echo "First user subscribed correctly {$subscribe['SubscriptionArn']}";
 	    $match=2;
-	}
-    else{
+}
+	
+else{
+	 for ($i=0; $i<sizeOf($listSubscriptions['Subscriptions']); $i++) {
+         $endpointsubscriptions=$listSubscriptions['Subscriptions'][$i]['Endpoint'];
+        $allendpoint[] = $endpointsubscriptions;
 	for($i=0;$i<sizeOf($allendpoint);$i++)
         {
    		if($email==$allendpoint[$i]){
@@ -83,7 +85,9 @@ for ($i=0; $i<sizeOf($listSubscriptions['Subscriptions']); $i++) {
 	    	$match=2;
 	    	echo "\r\n";
 	  	}
+ 	
     }
+echo "\r\n";
 echo "You will receive an email you must confirm";
 }
 

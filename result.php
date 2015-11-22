@@ -127,7 +127,7 @@ $sns = new Aws\Sns\SnsClient(array(
 ));
 
 $ArnArray = $sns->createTopic([
-'Name' => 'mp2-jgl-pic',
+'Name' => 'mp2-jgl-pict',
 ]);
 $Arn= $ArnArray['TopicArn'];
 
