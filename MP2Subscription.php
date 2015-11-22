@@ -4,7 +4,6 @@ require 'vendor/autoload.php';
 use Aws\Sns\SnsClient;
 
 $email = 'jginesta@hawk.iit.edu';
-$match= 0;
 
 $sns = new Aws\Sns\SnsClient(array(
 'version' => 'latest',
@@ -41,58 +40,15 @@ $listSubscriptions = $sns->listSubscriptionsByTopic(array(
     'TopicArn' => $Arn,
 ));
 
-if(sizeOf($listSubscriptions['Subscriptions'])==0){
-   
-    
-	$subscribe = $sns->subscribe(array(
-          'TopicArn' => $Arn,
-          'Protocol' => 'email',
-          'Endpoint' => $email,
-           ));
-    
-            echo "\r\n";
-            echo "First user subscribed correctly {$subscribe['SubscriptionArn']}";
-	    $match=2;
-	    echo "\r\n";
-            echo "You will receive an email you must confirm";
-}
-	
-else{
-	 for ($i=0; $i<sizeOf($listSubscriptions['Subscriptions']); $i++) {
-         $endpointsubscriptions=$listSubscriptions['Subscriptions'][$i]['Endpoint'];
-        $allendpoint[] = $endpointsubscriptions;
-	for($i=0;$i<sizeOf($allendpoint);$i++)
-        {
-   		if($email==$allendpoint[$i]){
-   			$match=1;  
-   		}
-    
-   
- 	}
 
-		if($match==1)
-       		{
-           		$match=2;
-			echo "User subscribed";
-	   
-       		}
-   		if($match==0){
-	   		$subscribe = $sns->subscribe(array(
-          		'TopicArn' => $Arn,
-          		'Protocol' => 'email',
-         		 'Endpoint' => $email,
-           	));
+$subscribe = $sns->subscribe(array(
+    'TopicArn' => $Arn,
+    'Protocol' => 'email',
+    'Endpoint' => $email,
+      ));
     
-            	echo "\r\n";
-            	echo "User subscribed correctly with status {$subscribe['SubscriptionArn']}";
-	    	$match=2;
-	    	echo "\r\n";
-		echo "\r\n";
-                echo "You will receive an email you must confirm";
-	  	}
- 	
-    }
+echo "You will receive an email you must confirm";
+	  	
 
-}
 
 ?>
