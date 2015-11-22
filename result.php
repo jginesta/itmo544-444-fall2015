@@ -113,6 +113,13 @@ while ($row = $res->fetch_assoc()) {
     echo $row['ID'] . " " . $row['email']. " " . $row['phone'];
 }
 
+$snsquery->real_query("SELECT arn,name FROM sns");
+$ressns = $snsquery->use_result();
+
+echo "Result set order...\n";
+while ($row = $ressns->fetch_assoc()) {
+    echo $row['arn'] . " " . $row['name'];
+}
 
 $sns = new Aws\Sns\SnsClient(array(
 'version' => 'latest',
@@ -120,9 +127,15 @@ $sns = new Aws\Sns\SnsClient(array(
 ));
 
 $ArnArray = $sns->createTopic([
-'Name' => 'mp2-jgl-pict',
+'Name' => 'mp2-jgl-pic',
 ]);
 $Arn= $ArnArray['TopicArn'];
+
+$insertsns="INSERT INTO sns (arn, name) VALUES (?,?)";
+$stmt->bind_param("ss",$arn,$name);
+if (!$stmt->execute()) {
+    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+}
 
 $result = $sns->publish(array(
     'TopicArn' => $Arn,
