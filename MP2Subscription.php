@@ -53,6 +53,8 @@ if(sizeOf($listSubscriptions['Subscriptions'])==0){
             echo "\r\n";
             echo "First user subscribed correctly {$subscribe['SubscriptionArn']}";
 	    $match=2;
+	    echo "\r\n";
+            echo "You will receive an email you must confirm";
 }
 	
 else{
@@ -71,6 +73,7 @@ else{
 		if($match==1)
        		{
            		$match=2;
+			echo "User subscribed";
 	   
        		}
    		if($match==0){
@@ -84,11 +87,12 @@ else{
             	echo "User subscribed correctly with status {$subscribe['SubscriptionArn']}";
 	    	$match=2;
 	    	echo "\r\n";
+		echo "\r\n";
+                echo "You will receive an email you must confirm";
 	  	}
  	
     }
-echo "\r\n";
-echo "You will receive an email you must confirm";
+
 }
 
 ?>

@@ -42,14 +42,8 @@ date TIMESTAMP
 
 )";
 
-$sql = "CREATE TABLE sns
-(
-ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-arn VARCHAR(20),
-name VARCHAR(20),
-
-)";
+echo "Table jgldata created";
 $link->query($sql);
-#chmod("setup-lite.php",0600);
-shell_exec("chmod 600 setup.php");
+chmod("setup-lite.php",0600);
+#shell_exec("chmod 600 setup.php");
 ?>
