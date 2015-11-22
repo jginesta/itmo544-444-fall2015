@@ -9,8 +9,7 @@ require 'vendor/autoload.php';
 use Aws\S3\S3Client;
 use Aws\Sns\SnsClient;
 
-#$email = 'jginesta@hawk.iit.edu';
-$match= 0;
+$email = 'jginesta@hawk.iit.edu';
 
 echo $_POST['email'];
 
@@ -113,29 +112,15 @@ while ($row = $res->fetch_assoc()) {
     echo $row['ID'] . " " . $row['email']. " " . $row['phone'];
 }
 
-$snsquery->real_query("SELECT arn,name FROM sns");
-$ressns = $snsquery->use_result();
-
-echo "Result set order...\n";
-while ($row = $ressns->fetch_assoc()) {
-    echo $row['arn'] . " " . $row['name'];
-}
-
 $sns = new Aws\Sns\SnsClient(array(
 'version' => 'latest',
 'region' => 'us-east-1'
 ));
 
 $ArnArray = $sns->createTopic([
-'Name' => 'mp2-jgl-pic',
+'Name' => 'mp2-jgl-pict',
 ]);
 $Arn= $ArnArray['TopicArn'];
-
-$insertsns="INSERT INTO sns (arn, name) VALUES (?,?)";
-$stmt->bind_param("ss",$arn,$name);
-if (!$stmt->execute()) {
-    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-}
 
 $result = $sns->publish(array(
     'TopicArn' => $Arn,
