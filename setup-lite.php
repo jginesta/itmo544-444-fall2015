@@ -42,7 +42,7 @@ date TIMESTAMP
 
 )";
 
-echo "Table jgldata created";
+
 $link->query($sql);
 chmod("setup-lite.php",0600);
 #shell_exec("chmod 600 setup.php");
