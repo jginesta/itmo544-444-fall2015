@@ -7,7 +7,9 @@ session_start();
 
 require 'vendor/autoload.php';
 use Aws\S3\S3Client;
+#Needed for Sns purposes
 use Aws\Sns\SnsClient;
+
 
 #$email = 'jginesta@hawk.iit.edu';
 
