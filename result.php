@@ -9,7 +9,7 @@ require 'vendor/autoload.php';
 use Aws\S3\S3Client;
 use Aws\Sns\SnsClient;
 
-$email = 'jginesta@hawk.iit.edu';
+#$email = 'jginesta@hawk.iit.edu';
 
 echo $_POST['email'];
 
