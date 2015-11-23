@@ -5,12 +5,10 @@ session_start();
 // In PHP versions earlier than 4.1.0, $HTTP_POST_FILES should be used instead
 // of $_FILES.
 
+
 require 'vendor/autoload.php';
 use Aws\S3\S3Client;
 use Aws\Sns\SnsClient;
-
-
-#$email = 'jginesta@hawk.iit.edu';
 
 echo $_POST['email'];
 

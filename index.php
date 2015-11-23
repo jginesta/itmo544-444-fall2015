@@ -2,7 +2,7 @@
 <html>
 <head><title>Hello app</title>
 </head>
-<body>
+<body style="background-color:LemonChiffon">
 
 <!-- The data encoding type, enctype, MUST be specified as below -->
 <form enctype="multipart/form-data" action="result.php" method="POST">
@@ -23,10 +23,10 @@ Enter Email of user for gallery to browse: <input type="email" name="email"><br 
 <input type="submit" value="Load Gallery" />
 </form>
 
-<!-- <form enctype="multipart/form-data" action="MP2Subscription.php" method="POST">
+<form enctype="multipart/form-data" action="MP2Subscription.php" method="POST">
 Enter Email of user to subscribe: <input type="text" name="email"/><br />
-Subscribe <input type="submit" value="MP2Subscription">
-</form>-->
+Confirm subscription <input type="submit" value="Subscribe">
+</form>
 
 </body>
 </html>
