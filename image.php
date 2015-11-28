@@ -1,5 +1,5 @@
 <?php
-
+//no va
 header('Content-type: image/png');
 
 $images= new Imagick(glob('../images/*.png'));
