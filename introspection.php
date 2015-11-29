@@ -66,13 +66,9 @@ $result = $s3->putObject([
 ]);  
 
 $url = $result['ObjectURL'];
-echo $url;
+//echo $url;
 
-function readOnly(){
-shell_exec("read-replica.sh");
-$_SESSION['read'] = true;
-	
-}
+
 
 ?>
 
@@ -80,6 +76,7 @@ $_SESSION['read'] = true;
 <!DOCTYPE html>
 <html lang="de">
 <head>
+
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -88,15 +85,28 @@ $_SESSION['read'] = true;
 	<link href='../dist/simplelightbox.min.css' rel='stylesheet' type='text/css'>
 	<link href='demo.css' rel='stylesheet' type='text/css'>
 </head>
-<body>
+
+
 	<div class="container">
+		
+		
 		<h1 class="align-center">Jessicas Introspection</h1>
 		<h2 class="align-center"> 
-		<input type='button' name='ReadOnly' onclick=readOnly() value='ReadOnly'>;							
+		
+		
+		
 		<?php
 		$url = $result['ObjectURL'];
+		
 		echo "The url for your backup is: ".$url;
-		?>		
+		?>
+		<br />	
+		<br />
+		<form enctype="multipart/form-data" action="index.php" method="POST">
+		Do you want to activate the read only mode? <select name="read" id="read">
+		  <option value="yes">Yes</option>
+		  <option value="">No</option></select><input type="submit" value="Submit" />
+		</form>	
 		</div>
 		<br><br>
 			

@@ -26,8 +26,7 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-#print "Here is the result: " . $link;
-#global $con;
+//Create the table jgldata
 $sql = "CREATE TABLE jgldata
 (
 ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -45,5 +44,5 @@ date TIMESTAMP
 
 $link->query($sql);
 //chmod("setup-lite.php",0600);
-#shell_exec("chmod 600 setup.php");
+shell_exec("chmod 600 setup.php");
 ?>

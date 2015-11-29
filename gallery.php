@@ -2,7 +2,8 @@
 <?php
 session_start();
 require 'vendor/autoload.php';
-
+$_SESSION['upload']=$_POST["email"];
+$sessionUp=$_SESSION['upload'];
 # Creating a client for the s3 bucket
 use Aws\Rds\RdsClient;
 $client = new Aws\Rds\RdsClient([
@@ -22,8 +23,6 @@ $result = $client->describeDBInstances([
 $endpoint = "";
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
 
-
-
 # Connecting to the database
 $link = mysqli_connect($endpoint,"controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
 
@@ -33,7 +32,6 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-
 if (!empty($_POST['email'])){
 $email = $_POST["email"];
 $link->real_query("SELECT * FROM jgldata WHERE email='".$email."'");
@@ -41,8 +39,6 @@ $link->real_query("SELECT * FROM jgldata WHERE email='".$email."'");
 $link->real_query("SELECT * FROM jgldata");
 
 }
-# Selecting everything that the database with the name jgldata contains
-
 $res = $link->use_result();
 
 ?>
@@ -75,15 +71,14 @@ $res = $link->use_result();
                		while ($row = $res->fetch_assoc()) 
                		{
                		echo '<a href="'. $row['s3rawurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3rawurl'] . '" width="100" height="100" ></a>';  
-			print_r  ($_SESSION);
-			if(isset($_SESSION['upload']) && $_SESSION['upload'] == 1){
+			if(strlen($sessionUp)==0){
                            echo '<a href="'. $row['s3finishedurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3finishedurl'] . '" width="50" height="50" ></a>';  
-			   $_SESSION['upload'] = 0;	
+			   //$_SESSION['upload'] = 0;	
 	   			
 			                    	
 			} 
                         session_unset();
-                        session_destroy();  
+                        //session_destroy();  
 			}
                		$link->close();
                          

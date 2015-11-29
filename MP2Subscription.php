@@ -3,7 +3,7 @@ session_start();
 require 'vendor/autoload.php';
 use Aws\Sns\SnsClient;
 
-$match= 0;
+//Create topic and subscribe to it
 $email=$_POST['email'];
 
 $sns = new Aws\Sns\SnsClient(array(
@@ -23,22 +23,16 @@ $settopicAttributes = $sns->setTopicAttributes(array(
     'AttributeValue'=>'mp2-jgl-pict',
 ));
 
-
 $topicAttributes = $sns->getTopicAttributes(array(
     'TopicArn' => "$Arn",
     'AttributeName'=>'DisplayName',
     'AttributeValue'=>'mp2-jgl-pict',
 ));
-#echo "\r\n";
-#echo "Subscriptions pending: {$topicAttributes['Attributes']['SubscriptionsPending']}";
-#echo "\r\n";
-#echo "Subscriptions confirmed: {$topicAttributes['Attributes']['SubscriptionsConfirmed']} ";
 
 $listSubscriptions = $sns->listSubscriptionsByTopic(array(
     // TopicArn is required
     'TopicArn' => $Arn,
 ));
-
 
 $subscribe = $sns->subscribe(array(
     'TopicArn' => $Arn,
@@ -50,7 +44,7 @@ $subscribe = $sns->subscribe(array(
 <html>
 <body style="background-color:LemonChiffon">
 <center> 
-<h1 style="color:LightSkyBlue"> Subscription confirmed</h1>
+<h1 style=> Subscription confirmed</h1>
 <h2> 
 		<?php
 		echo $email;

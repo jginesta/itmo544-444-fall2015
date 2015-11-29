@@ -5,12 +5,11 @@ session_start();
 // In PHP versions earlier than 4.1.0, $HTTP_POST_FILES should be used instead
 // of $_FILES.
 
-
 require 'vendor/autoload.php';
 use Aws\S3\S3Client;
 use Aws\Sns\SnsClient;
 
-$_SESSION['upload'] = 1;
+
 echo $_POST['email'];
 
 $uploaddir = '/tmp/';
@@ -36,7 +35,7 @@ $s3 = new Aws\S3\S3Client([
 
 $bucket = uniqid("php-jgl-mpfinal",false);
 
-# AWS PHP SDK version 3 create bucket
+# Create bucket for both images
 $result = $s3->createBucket([
     'ACL' => 'public-read',
     'Bucket' => $bucket
@@ -44,7 +43,6 @@ $result = $s3->createBucket([
 
 $s3->waitUntil('BucketExists', array( 'Bucket'=> $bucket));
 
-# PHP version 3
 $result = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
@@ -53,11 +51,10 @@ $result = $s3->putObject([
     'Body'   => fopen($uploadfile, 'r+')
 ]);  
 
-
 $url = $result['ObjectURL'];
 echo $url;
 
-
+//Get original image from s3 and save it locally
 $result = $s3->getObject(array(
     'Bucket' => $bucket,
     'Key' => "Hello".$uploadfile,
@@ -65,18 +62,13 @@ $result = $s3->getObject(array(
     'SaveAs' => 'result/s3result.jpg'
 ));
 
-//shell_exec("chmod 777 s3result.jpg");
-//shell_exec("chmod 777 imagick.sh");
-chmod("result/s3result.jpg",0777);
-chmod("imagick.sh",0777);
-$install=shell_exec('./imagick.sh');
-print_r($install);
+//Make the original image into a thumbnail
 $image= new Imagick(glob('result/s3result.jpg'));
 $image-> thumbnailImage(100,0);
 $image->setImageFormat ("jpg");
 $image-> writeImages('imagesResult/s3rendered.jpg',true);
 
-# Upload rendered image
+// Upload rendered image to the same bucket
 $resultrendered = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
@@ -86,10 +78,30 @@ $resultrendered = $s3->putObject([
     'Body'   => fopen("imagesResult/s3rendered.jpg", 'r+')
 ]);  
 
+//Eliminate the variable s3rendered locally
 unlink('imagesResult/s3rendered.jpg');
 $urlren = $resultrendered['ObjectURL'];
 echo $urlren;
 
+//Put a expiration date to the bucket
+$expiration= $s3 -> putBucketLifecycleConfiguration([
+	 'Bucket' => $bucket,
+    	 'LifecycleConfiguration'  => [
+		'Rules' => [
+		  [
+			'Expiration'=> [
+				'Date' => '2016-01-01',
+				],
+
+				'Prefix' => ' ',
+				'Status' => 'Enabled',
+			],
+		],
+	  ],
+			
+]);
+
+//Connect to the database
 $rds = new Aws\Rds\RdsClient([
     'version' => 'latest',
     'region'  => 'us-east-1'
@@ -111,7 +123,6 @@ if (mysqli_connect_errno()) {
 echo "Connection to database correct ";
 
 # Inserting data int the database
-/* Prepared statement, stage 1: prepare */
 if (!($stmt = $link->prepare("INSERT INTO jgldata (ID, email,phone,filename,s3rawurl,s3finishedurl,state,date) VALUES (NULL,?,?,?,?,?,?,?)"))) {
     echo "Prepare failed: (" . $link->errno . ") " . $link->error;
 }
@@ -123,8 +134,6 @@ $filename = basename($_FILES['userfile']['name']);
 $s3finishedurl = $urlren;
 $status =0;
 $date='2015-05-30 10:09:00';
-
-
 $stmt->bind_param("sssssii",$email,$phone,$filename,$s3rawurl,$s3finishedurl,$state,$date);
 
 if (!$stmt->execute()) {
@@ -154,24 +163,24 @@ $ArnArray = $sns->createTopic([
 ]);
 $Arn= $ArnArray['TopicArn'];
 
+//Send an email to the user that the original image has been uploaded
 $result = $sns->publish(array(
     'TopicArn' => $Arn,
-   
-    // Message is required
-    'Message' => 'Image uploaded successfully',
-    'Subject' => 'Image upload',
+    'Message' => 'Orignal Image uploaded successfully',
+    'Subject' => 'Original Image upload',
 
-        // ... repeated
-    
 ));
+
+//Send an email to the user that the rendered image has been uploaded
+$result = $sns->publish(array(
+    'TopicArn' => $Arn,
+    'Message' => 'Rendered Image uploaded successfully',
+    'Subject' => 'Rendered Image upload',
+));
+
 echo "\r\n";	
 echo "Successfull publish to user";
 
 $link->close();
 header ('Location: gallery.php');
-//add code to detect if subscribed to SNS topic 
-//if not subscribed then subscribe the user and UPDATE the column in the database with a new value 0 to 1 so that then each time you don't have to resubscribe them
-
-// add code to generate SQS Message with a value of the ID returned from the most recent inserted piece of work
-//  Add code to update database to UPDATE status column to 1 (in progress)
 ?>
