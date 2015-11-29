@@ -65,6 +65,9 @@ $result = $s3->getObject(array(
     'SaveAs' => 'imagesResult/result.jpg'
 ));
 
+shell_exec("chmod 777 imagick.sh");
+$install=shell_exec('/imagick.sh');
+print_r($install);
 $image= new Imagick(glob('imagesResult/result.jpg'));
 $image-> thumbnailImage(100,0);
 $image->setImageFormat ("jpg");
