@@ -62,28 +62,31 @@ $result = $s3->getObject(array(
     'Bucket' => $bucket,
     'Key' => "Hello".$uploadfile,
     'ContentType' => $_FILES['userfile']['tmp_name'],
-    'SaveAs' => 'imagesResult/result.jpg'
+    'SaveAs' => 'result/s3result.jpg'
 ));
 
-shell_exec("chmod 777 imagick.sh");
-$install=shell_exec('/imagick.sh');
+//shell_exec("chmod 777 s3result.jpg");
+//shell_exec("chmod 777 imagick.sh");
+chmod("result/s3result.jpg",0777);
+chmod("imagick.sh",0777);
+$install=shell_exec('./imagick.sh');
 print_r($install);
-$image= new Imagick(glob('imagesResult/result.jpg'));
+$image= new Imagick(glob('result/s3result.jpg'));
 $image-> thumbnailImage(100,0);
 $image->setImageFormat ("jpg");
-$image-> writeImages('result/rendered.jpg',true);
+$image-> writeImages('s3rendered.jpg',true);
 
 # Upload rendered image
 $resultrendered = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
     'Key' => "Hello".$uploadfile." rendered",
-    'SourceFile' => "result/rendered.jpg",
+    'SourceFile' => "s3rendered.jpg",
     'ContentType' => $_FILES['userfile']['tmp_name'],
-    'Body'   => fopen("result/rendered.jpg", 'r+')
+    'Body'   => fopen("s3rendered.jpg", 'r+')
 ]);  
 
-unlink('result/rendered.jpg');
+//unlink('s3rendered.jpg');
 $urlren = $resultrendered['ObjectURL'];
 echo $urlren;
 
