@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php
+ session_start();
+ $_SESSION['upload'] = false;
+
+ ?>
 <html>
 <head><title>Hello app</title>
 </head>
@@ -16,6 +20,9 @@ Enter Phone of user (1-XXX-XXX-XXXX): <input type="phone" name="phone">
 
 <input type="submit" value="Send File" />
 </form>
+
+
+
 <hr />
 <!-- The data encoding type, enctype, MUST be specified as below -->
 <form enctype="multipart/form-data" action="gallery.php" method="POST">
@@ -28,6 +35,7 @@ Enter Email of user to subscribe: <input type="text" name="email"/><br />
 Confirm subscription <input type="submit" value="Subscribe">
 </form>
 
+<a href= "introspection.php"> Introspection <a/>
 </body>
 </html>
 

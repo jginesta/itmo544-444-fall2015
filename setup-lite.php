@@ -32,7 +32,7 @@ $sql = "CREATE TABLE jgldata
 (
 ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 uname VARCHAR(20),
-email VARCHAR(20),
+email VARCHAR(50),
 phone VARCHAR(20),
 filename VARCHAR(256),
 s3rawurl VARCHAR(256),
@@ -44,6 +44,6 @@ date TIMESTAMP
 
 
 $link->query($sql);
-chmod("setup-lite.php",0600);
+//chmod("setup-lite.php",0600);
 #shell_exec("chmod 600 setup.php");
 ?>

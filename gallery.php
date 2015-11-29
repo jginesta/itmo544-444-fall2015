@@ -10,12 +10,19 @@ $client = new Aws\Rds\RdsClient([
  'region'  => 'us-east-1'
 ]);
 
+//if($_SESSION['read'] == false){
 $result = $client->describeDBInstances([
     'DBInstanceIdentifier' => 'mp1-jgl',
 ]);
-
+//} else{
+//$result = $client->describeDBInstances([
+//    'DBInstanceIdentifier' => 'mp1-jgl-read',
+//]);
+//}
 $endpoint = "";
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
+
+
 
 # Connecting to the database
 $link = mysqli_connect($endpoint,"controller","letmein888","customerrecords") or die("Error " . mysqli_error($link));
@@ -26,8 +33,15 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-# Selecting everything that the database with the name jgldata contains
+
+if (!empty($_POST['email'])){
+$email = $_POST["email"];
+$link->real_query("SELECT * FROM jgldata WHERE email='".$email."'");
+}else{
 $link->real_query("SELECT * FROM jgldata");
+}
+# Selecting everything that the database with the name jgldata contains
+
 $res = $link->use_result();
 
 ?>
@@ -57,11 +71,18 @@ $res = $link->use_result();
 
 		<div class="gallery">	
 			<?php
-               
                		while ($row = $res->fetch_assoc()) 
                		{
                		echo '<a href="'. $row['s3rawurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3rawurl'] . '" width="100" height="100" ></a>';  
-                  	}
+                  	if($_SESSION['upload'] == true){
+                           echo '<a href="'. $row['s3finishedurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3finishedurl'] . '" width="50" height="50" ></a>';  
+			   $_SESSION['upload'] = false;	
+	   			
+			                    	
+			} 
+                        session_unset();
+                        //session_destroy();  
+			}
                		$link->close();
                          
               		?>			

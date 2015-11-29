@@ -33,10 +33,11 @@ $backup = uniqid("dbname",false);
 
 $backuptot=$uploaddir.$backup. '.' . 'sql';
 
-echo $backuptot;
+//echo $backuptot;
 
 $dump="mysqldump --user=controller --password=letmein888 --host=$endpoint customerrecords > $backuptot";
-exec($command);
+
+exec($dump);
 
 $s3 = new Aws\S3\S3Client([
     'version' => 'latest',
@@ -64,7 +65,14 @@ $result = $s3->putObject([
     //'Body'   => fopen($uploadfile, 'r+')
 ]);  
 
+$url = $result['ObjectURL'];
+echo $url;
 
+function readOnly(){
+shell_exec("read-replica.sh");
+$_SESSION['read'] = true;
+	
+}
 
 ?>
 
@@ -84,10 +92,12 @@ $result = $s3->putObject([
 	<div class="container">
 		<h1 class="align-center">Jessicas Introspection</h1>
 		<h2 class="align-center"> 
-		
-									
+		<input type='button' name='ReadOnly' onclick=readOnly() value='ReadOnly'>;							
+		<?php
+		$url = $result['ObjectURL'];
+		echo "The url for your backup is: ".$url;
+		?>		
 		</div>
-	
 		<br><br>
 			
 	
