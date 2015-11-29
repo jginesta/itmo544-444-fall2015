@@ -10,7 +10,7 @@ require 'vendor/autoload.php';
 use Aws\S3\S3Client;
 use Aws\Sns\SnsClient;
 
-$_SESSION['upload'] = true;
+$_SESSION['upload'] = 1;
 echo $_POST['email'];
 
 $uploaddir = '/tmp/';
@@ -74,19 +74,19 @@ print_r($install);
 $image= new Imagick(glob('result/s3result.jpg'));
 $image-> thumbnailImage(100,0);
 $image->setImageFormat ("jpg");
-$image-> writeImages('s3rendered.jpg',true);
+$image-> writeImages('imagesResult/s3rendered.jpg',true);
 
 # Upload rendered image
 $resultrendered = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
     'Key' => "Hello".$uploadfile." rendered",
-    'SourceFile' => "s3rendered.jpg",
+    'SourceFile' => "imagesResult/s3rendered.jpg",
     'ContentType' => $_FILES['userfile']['tmp_name'],
-    'Body'   => fopen("s3rendered.jpg", 'r+')
+    'Body'   => fopen("imagesResult/s3rendered.jpg", 'r+')
 ]);  
 
-//unlink('s3rendered.jpg');
+unlink('imagesResult/s3rendered.jpg');
 $urlren = $resultrendered['ObjectURL'];
 echo $urlren;
 

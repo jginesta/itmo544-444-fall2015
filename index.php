@@ -1,6 +1,6 @@
 <?php
  session_start();
- $_SESSION['upload'] = false;
+ //$_SESSION['upload'] = false;
 
  ?>
 <html>

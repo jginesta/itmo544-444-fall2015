@@ -39,6 +39,7 @@ $email = $_POST["email"];
 $link->real_query("SELECT * FROM jgldata WHERE email='".$email."'");
 }else{
 $link->real_query("SELECT * FROM jgldata");
+
 }
 # Selecting everything that the database with the name jgldata contains
 
@@ -74,14 +75,15 @@ $res = $link->use_result();
                		while ($row = $res->fetch_assoc()) 
                		{
                		echo '<a href="'. $row['s3rawurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3rawurl'] . '" width="100" height="100" ></a>';  
-                  	if($_SESSION['upload'] == true){
+			print_r  ($_SESSION);
+			if(isset($_SESSION['upload']) && $_SESSION['upload'] == 1){
                            echo '<a href="'. $row['s3finishedurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3finishedurl'] . '" width="50" height="50" ></a>';  
-			   $_SESSION['upload'] = false;	
+			   $_SESSION['upload'] = 0;	
 	   			
 			                    	
 			} 
                         session_unset();
-                        //session_destroy();  
+                        session_destroy();  
 			}
                		$link->close();
                          

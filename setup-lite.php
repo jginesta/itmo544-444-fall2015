@@ -1,6 +1,6 @@
 <?php
 // Start the session
-require 'vendor/autoload.php';
+require '../itmo-544-444-app/vendor/autoload.php';
 $rds = new Aws\Rds\RdsClient([
     'version' => 'latest',
     'region'  => 'us-east-1'
