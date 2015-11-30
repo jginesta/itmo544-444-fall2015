@@ -11,15 +11,10 @@ $client = new Aws\Rds\RdsClient([
  'region'  => 'us-east-1'
 ]);
 
-//if($_SESSION['read'] == false){
 $result = $client->describeDBInstances([
     'DBInstanceIdentifier' => 'mp1-jgl',
 ]);
-//} else{
-//$result = $client->describeDBInstances([
-//    'DBInstanceIdentifier' => 'mp1-jgl-read',
-//]);
-//}
+
 $endpoint = "";
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
 
@@ -73,13 +68,10 @@ $res = $link->use_result();
                		echo '<a href="'. $row['s3rawurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3rawurl'] . '" width="100" height="100" ></a>';  
 			if(strlen($sessionUp)==0){
                            echo '<a href="'. $row['s3finishedurl'] .'" title="'. $row['filename'] .'" data-gallery ><img src="' . $row['s3finishedurl'] . '" width="50" height="50" ></a>';  
-			   //$_SESSION['upload'] = 0;	
-	   			
-			                    	
+			                   	
 			} 
                         session_unset();
-                        //session_destroy();  
-			}
+                        }
                		$link->close();
                          
               		?>			
